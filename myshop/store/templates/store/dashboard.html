@@ -1,0 +1,537 @@
+<!-- dashboard.html -->
+{% extends 'store/base.html' %}
+
+{% block extra_css %}
+<style>
+    .dashboard-container {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .chat-container {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        height: calc(100vh - 100px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chat-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 15px;
+    }
+
+    .message {
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .user-message {
+        background: #e3f2fd;
+        margin-left: 20px;
+    }
+
+    .ai-message {
+        background: #f5f5f5;
+        margin-right: 20px;
+    }
+
+    .chat-input {
+        padding: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .chat-input form {
+        display: flex;
+        gap: 10px;
+    }
+
+    .chat-input input {
+        flex-grow: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .chat-input button {
+        padding: 8px 15px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .chat-input button:hover {
+        background: #0056b3;
+    }
+
+    .balance-grid, .utilization-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin: 15px 0;
+    }
+
+    .balance-item {
+        background: white;
+        padding: 10px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .balance-item p {
+        margin: 0;
+        font-size: 0.9em;
+    }
+
+    .balance-info h4 {
+        margin-top: 20px;
+        color: #444;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+    }
+
+    .intraday-data {
+        margin-top: 20px;
+    }
+
+    .intraday-data table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .intraday-data th, .intraday-data td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .intraday-data th {
+        background-color: #f2f2f2;
+    }
+
+    .intraday-chart {
+        margin-top: 20px;
+    }
+    
+    .market-data {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    {% if request.session.profile_error %}
+        <div class="alert alert-danger">
+            {{ request.session.profile_error }}
+        </div>
+    {% endif %}
+
+    {% if user_profile %}
+        <div class="dashboard-container">
+
+            <div class="profile-section">
+                {% if broker_name == 'Angel One' %}
+                    <h2>Welcome, {{ user_profile.name|default:"User" }}</h2>
+                    
+                    <div class="profile-details">
+                        <div class="basic-info">
+                            <h3>Basic Information</h3>
+                            <p><strong>Client Code:</strong> {{ user_profile.client_code }}</p>
+                            <p><strong>Email:</strong> {{ user_profile.email }}</p>
+                            <p><strong>Phone Number:</strong> {{ user_profile.phone_number }}</p>
+                            <p><strong>Broker ID:</strong> {{ user_profile.broker_id }}</p>
+                            {% if user_profile.last_login %}
+                                <p><strong>Last Login:</strong> {{ user_profile.last_login }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="trading-info">
+                            <h3>Trading Information</h3>
+                            
+                            {% if rms_data %}
+                                <div class="balance-info">
+                                    <h4>Balance Information</h4>
+                                    <div class="balance-grid">
+                                        <div class="balance-item">
+                                            <p><strong>Net Balance:</strong> ₹{{ rms_data.net|floatformat:2 }}</p>
+                                        </div>
+                                        <div class="balance-item">
+                                            <p><strong>Available Cash:</strong> ₹{{ rms_data.availablecash|floatformat:2 }}</p>
+                                        </div>
+                                        <div class="balance-item">
+                                            <p><strong>Collateral:</strong> ₹{{ rms_data.collateral|floatformat:2 }}</p>
+                                        </div>
+                                        <div class="balance-item">
+                                            <p><strong>M2M Unrealized:</strong> ₹{{ rms_data.m2munrealized|floatformat:2 }}</p>
+                                        </div>
+                                        <div class="balance-item">
+                                            <p><strong>M2M Realized:</strong> ₹{{ rms_data.m2mrealized|floatformat:2 }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <h4>Utilization Details</h4>
+                                    <div class="utilization-grid">
+                                        <div class="balance-item">
+                                            <p><strong>Used Span:</strong> ₹{{ rms_data.utilisedspan|floatformat:2 }}</p>
+                                        </div>
+                                        <div class="balance-item">
+                                            <p><strong>Used Option Premium:</strong> ₹{{ rms_data.utilisedoptionpremium|floatformat:2 }}</p>
+                                        </div>
+                                        <div class="balance-item">
+                                            <p><strong>Used Exposure:</strong> ₹{{ rms_data.utilisedexposure|floatformat:2 }}</p>
+                                        </div>
+                                        <div class="balance-item">
+                                            <p><strong>Used Turnover:</strong> ₹{{ rms_data.utilisedturnover|floatformat:2 }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <p>Unable to fetch balance information at this time.</p>
+                            {% endif %}
+
+                            {% if user_profile.exchanges %}
+                                <div class="exchanges">
+                                    <h4>Available Exchanges</h4>
+                                    <ul>
+                                        {% for exchange in user_profile.exchanges %}
+                                            <li>{{ exchange }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% elif broker_name == 'Upstox' %}
+                    <h2>Welcome, {{ user_profile.user_name|default:"User" }}</h2>
+                    
+                    <div class="profile-details">
+                        <div class="basic-info">
+                            <h3>Basic Information</h3>
+                            <p><strong>User ID:</strong> {{ user_profile.user_id }}</p>
+                            <p><strong>Email:</strong> {{ user_profile.email }}</p>
+                            <p><strong>User Type:</strong> {{ user_profile.user_type }}</p>
+                            <p><strong>Account Status:</strong> {{ user_profile.is_active|yesno:"Active,Inactive" }}</p>
+                        </div>
+
+                        <div class="trading-info">
+                            <h3>Trading Information</h3>
+                            {% if user_profile.exchanges %}
+                                <div class="exchanges">
+                                    <h4>Available Exchanges</h4>
+                                    <ul>
+                                        {% for exchange in user_profile.exchanges %}
+                                            <li>{{ exchange }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                            
+                            {% if user_profile.products %}
+                                <div class="exchanges">
+                                    <h4>Available Products</h4>
+                                    <ul>
+                                        {% for product in user_profile.products %}
+                                            <li>{{ product }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                            
+                            {% if user_profile.order_types %}
+                                <div class="exchanges">
+                                    <h4>Order Types</h4>
+                                    <ul>
+                                        {% for order_type in user_profile.order_types %}
+                                            <li>{{ order_type }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+
+                            {% if funds_data %}
+                                <div class="trading-info">
+                                    <h3>Funds and Margin Information</h3>
+                                    
+                                    {% if funds_data.equity %}
+                                        <div class="balance-info">
+                                            <h4>Equity Segment</h4>
+                                            <div class="balance-grid">
+                                                <div class="balance-item">
+                                                    <p><strong>Available Margin:</strong> ₹{{ funds_data.equity.available_margin|floatformat:2 }}</p>
+                                                </div>
+                                                <div class="balance-item">
+                                                    <p><strong>Used Margin:</strong> ₹{{ funds_data.equity.used_margin|floatformat:2 }}</p>
+                                                </div>
+                                                <div class="balance-item">
+                                                    <p><strong>Payin Amount:</strong> ₹{{ funds_data.equity.payin_amount|floatformat:2 }}</p>
+                                                </div>
+                                                <div class="balance-item">
+                                                    <p><strong>Span Margin:</strong> ₹{{ funds_data.equity.span_margin|floatformat:2 }}</p>
+                                                </div>
+                                                <div class="balance-item">
+                                                    <p><strong>Exposure Margin:</strong> ₹{{ funds_data.equity.exposure_margin|floatformat:2 }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if funds_data.commodity %}
+                                        <div class="balance-info">
+                                            <h4>Commodity Segment</h4>
+                                            <div class="balance-grid">
+                                                <div class="balance-item">
+                                                    <p><strong>Available Margin:</strong> ₹{{ funds_data.commodity.available_margin|floatformat:2 }}</p>
+                                                </div>
+                                                <div class="balance-item">
+                                                    <p><strong>Used Margin:</strong> ₹{{ funds_data.commodity.used_margin|floatformat:2 }}</p>
+                                                </div>
+                                                <div class="balance-item">
+                                                    <p><strong>Payin Amount:</strong> ₹{{ funds_data.commodity.payin_amount|floatformat:2 }}</p>
+                                                </div>
+                                                <div class="balance-item">
+                                                    <p><strong>Span Margin:</strong> ₹{{ funds_data.commodity.span_margin|floatformat:2 }}</p>
+                                                </div>
+                                                <div class="balance-item">
+                                                    <p><strong>Exposure Margin:</strong> ₹{{ funds_data.commodity.exposure_margin|floatformat:2 }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <p>Unable to fetch funds and margin information at this time.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Live Market Data Section -->
+            <div class="market-data">
+                <h3>Live Market Data</h3>
+                <div id="liveMarketData">
+                    <p>Loading live market data...</p>
+                </div>
+            </div>
+
+            <!-- Intraday Candle Data Section -->
+            {% if intraday_data %}
+                <div class="intraday-data">
+                    <h3>Intraday Candle Data</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Open</th>
+                                <th>High</th>
+                                <th>Low</th>
+                                <th>Close</th>
+                                <th>Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for candle in intraday_data.candles %}
+                                <tr>
+                                    <td>{{ candle.0 }}</td>
+                                    <td>₹{{ candle.1|floatformat:2 }}</td>
+                                    <td>₹{{ candle.2|floatformat:2 }}</td>
+                                    <td>₹{{ candle.3|floatformat:2 }}</td>
+                                    <td>₹{{ candle.4|floatformat:2 }}</td>
+                                    <td>{{ candle.5 }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Chart Section -->
+                <div class="intraday-chart">
+                    <h3>Intraday Price Chart</h3>
+                    <canvas id="intradayChart" width="400" height="200"></canvas>
+                </div>
+            {% else %}
+                <p>No intraday data available.</p>
+            {% endif %}
+
+            <!-- Chat section -->
+            <div class="chat-container">
+                <h3 class="p-3 bg-light border-bottom">AI Trading Assistant</h3>
+                <div class="chat-messages" id="chatMessages">
+                    {% for chat in chat_history %}
+                    <div class="message user-message">{{ chat.message }}</div>
+                    <div class="message ai-message">{{ chat.response }}</div>
+                    {% endfor %}
+                </div>
+                <div class="chat-input">
+                    <form id="chatForm" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="text" id="messageInput" name="message" placeholder="Ask anything about trading..." required>
+                        <input type="file" name="file" accept=".jpg,.jpeg,.pdf">
+                        <button type="submit">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <p>Your profile is not available. Please try logging in again.</p>
+    {% endif %}
+
+    <table id="contractsTable">
+        <thead>
+            <tr>
+                <th>Trading Symbol</th>
+                <th>Strike Price</th>
+                <th>Expiry Date</th>
+                <!-- Add more headers as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Option contracts will be populated here -->
+        </tbody>
+    </table>
+
+    <table id="optionChainTable">
+        <thead>
+            <tr>
+                <th>Expiry</th>
+                <th>Put Call Ratio (PCR)</th>
+                <th>Strike Price</th>
+                <th>Underlying Key</th>
+                <th>Underlying Spot Price</th>
+                <th>Call Instrument Key</th>
+                <th>Call LTP</th>
+                <th>Call OI</th>
+                <th>Put Instrument Key</th>
+                <th>Put LTP</th>
+                <th>Put OI</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Option chain data will be populated here -->
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Function to fetch live market data
+    function fetchMarketData() {
+        fetch('/get-market-data/')  // Endpoint to get market data
+            .then(response => response.json())
+            .then(data => {
+                const marketDataDiv = document.getElementById('liveMarketData');
+                marketDataDiv.innerHTML = '';  // Clear previous data
+                if (data.market_data) {
+                    // Display the market data
+                    marketDataDiv.innerHTML = `
+                        <p><strong>Market Status:</strong> ${data.market_data.status}</p>
+                        <p><strong>Last Price:</strong> ₹${data.market_data.last_price}</p>
+                        <p><strong>Volume:</strong> ${data.market_data.volume}</p>
+                    `;
+                } else {
+                    marketDataDiv.innerHTML = '<p>No market data available.</p>';
+                }
+            })
+            .catch(error => console.error('Error fetching market data:', error));
+    }
+
+    // Fetch market data every 5 seconds
+    setInterval(fetchMarketData, 5000);
+
+    // Prepare data for the chart
+    document.addEventListener('DOMContentLoaded', function() {
+        const intradayData = JSON.parse('{{ intraday_data|escapejs }}'); // Use JSON.parse for safety
+
+        // Check if candles exist
+        if (intradayData.candles && intradayData.candles.length > 0) {
+            const labels = intradayData.candles.map(candle => new Date(candle[0]).toLocaleTimeString());
+            const prices = intradayData.candles.map(candle => candle[4]); // Closing prices
+
+            // Create the chart
+            const ctx = document.getElementById('intradayChart').getContext('2d');
+            const intradayChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Intraday Prices',
+                        data: prices,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        fill: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Price'
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            console.error('No intraday data available.');
+        }
+    });
+
+    // Chat functionality
+    document.getElementById('chatForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const messageInput = document.getElementById('messageInput');
+        const message = messageInput.value;
+        const chatMessages = document.getElementById('chatMessages');
+        
+        // Add user message to chat
+        chatMessages.innerHTML += `<div class="message user-message">${message}</div>`;
+        messageInput.value = '';
+        
+        // Send message to server
+        fetch('{% url "chat-with-ai" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `message=${encodeURIComponent(message)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                chatMessages.innerHTML += `<div class="message ai-message">${data.response}</div>`;
+            } else {
+                chatMessages.innerHTML += `<div class="message ai-message error">Error: ${data.message}</div>`;
+            }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            chatMessages.innerHTML += `<div class="message ai-message error">Error: Could not send message</div>`;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Choose Login Method</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #666;
+            margin: 0;
+        }
+        .broker-options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        .broker-option {
+            flex: 1;
+            max-width: 200px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+        .broker-option:hover {
+            transform: translateY(-5px);
+        }
+        .angel-one {
+            background-color: #007bff;
+            color: white;
+        }
+        .upstox {
+            background-color: #28a745;
+            color: white;
+        }
+        .broker-option h2 {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+        .broker-option p {
+            margin: 0;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        .logout-btn {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            text-decoration: none;
+        }
+        .logout-btn:hover {
+            color: #333;
+        }
+        .welcome-user {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="welcome-user">
+            Welcome, {{ request.user.username }}!
+        </div>
+        
+        <div class="header">
+            <h1>Choose Your Trading Platform</h1>
+            <p>Select the platform you want to use for trading</p>
+        </div>
+
+        <div class="broker-options">
+            <a href="{% url 'angel_one_login' %}" class="broker-option angel-one">
+                <h2>Angel One</h2>
+                <p>Login to your Angel One trading account</p>
+            </a>
+            
+            <a href="{% url 'upstox_login' %}" class="broker-option upstox">
+                <h2>Upstox</h2>
+                <p>Login to your Upstox trading account</p>
+            </a>
+        </div>
+
+        <form action="{% url 'logout' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+</body>
+</html> 
