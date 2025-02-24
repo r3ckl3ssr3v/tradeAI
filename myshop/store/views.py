@@ -432,11 +432,12 @@ def dashboard(request):
     funds_data = None
     intraday_data = None
     instruments = None
-    
-    # Get interval from request, default to 1minute
+    market_data = request.session.get('market_data', {})  # Retrieve market data from session
+
+    # Get interval from request, default to 30 minutes
     interval = request.GET.get('interval', '30minute')
     if interval not in ['1minute', '30minute', '60minute']:
-        interval = '30minute'  # Default to 1minute if invalid interval
+        interval = '30minute'  # Default to 30 minutes if invalid interval
     
     # Check for Upstox profile
     if 'upstox_access_token' in request.session:
@@ -458,6 +459,7 @@ def dashboard(request):
         'broker_name': broker_name,
         'funds_data': funds_data,
         'intraday_data': intraday_data,
+        'market_data': market_data,  # Include market data in the context
         'intervals': ['1minute', '30minute'],  # Allowed intervals
     }
     
@@ -932,13 +934,12 @@ def request_access_token_via_notifier():
 # Call this function to initiate the access token request
 # response_data = request_access_token_via_notifier()
 
-@csrf_exempt  # Use this if you're not using CSRF tokens for this endpoint
+@csrf_exempt
 def update_market_data(request):
     if request.method == 'POST':
         try:
             market_data = json.loads(request.body)
             # Process and store the market data as needed
-            # For example, you can store it in the session or a database
             request.session['market_data'] = market_data  # Store in session for simplicity
             return JsonResponse({'status': 'success'})
         except Exception as e:

@@ -160,7 +160,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_NAME = "sessionid"
 
 # Add your OpenAI API key
-# OPENAI_API_KEY = ''
+OPENAI_API_KEY = ''
 
 LOGGING = {
     'version': 1,

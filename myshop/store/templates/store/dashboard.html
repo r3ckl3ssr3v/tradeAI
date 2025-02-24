@@ -321,7 +321,19 @@
             <div class="market-data">
                 <h3>Live Market Data</h3>
                 <div id="liveMarketData">
-                    <p>Loading live market data...</p>
+                    {% if market_data %}
+                        <h4>NSE_INDEX|Nifty Bank</h4>
+                        <p><strong>Market Status:</strong> {{ market_data.status }}</p>
+                        <p><strong>Last Price:</strong> ₹{{ market_data.last_price }}</p>
+                        <p><strong>Volume:</strong> {{ market_data.volume }}</p>
+            
+                        <h4>NSE_INDEX|Nifty 50</h4>
+                        <p><strong>Market Status:</strong> {{ market_data.status }}</p>
+                        <p><strong>Last Price:</strong> ₹{{ market_data.last_price }}</p>
+                        <p><strong>Volume:</strong> {{ market_data.volume }}</p>
+                    {% else %}
+                        <p>No market data available.</p>
+                    {% endif %}
                 </div>
             </div>
 
