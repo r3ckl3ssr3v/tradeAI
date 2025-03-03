@@ -30,7 +30,9 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '*',
     '.awsapprunner.com',
-    'tradeai.finance'
+    'tradeai.finance',
+    '65.1.28.145',
+    'localhost'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
