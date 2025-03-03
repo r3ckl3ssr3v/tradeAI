@@ -27,8 +27,11 @@ SECRET_KEY = 'django-insecure-z5&#d*iyfhhyu1rqtlbfu^67o*^*m8#8*jnpc-0_m(o3os%-p9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*',
-                 ".awsapprunner.com"]
+ALLOWED_HOSTS = [
+    '*',
+    '.awsapprunner.com',
+    'tradeai.finance'
+]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://dd3f-2401-4900-8fd1-a86a-d089-edf9-2a7e-3a36.ngrok-free.app",
