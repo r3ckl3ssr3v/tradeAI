@@ -41,7 +41,8 @@ CSRF_TRUSTED_ORIGINS = [
     "https://6dec-2401-4900-8fd1-a86a-d089-edf9-2a7e-3a36.ngrok-free.app",
     "https://77d3-2401-4900-8fd1-a86a-4db2-d1cc-6ce5-ad2.ngrok-free.app",
     "https://f0fe-117-194-4-8.ngrok-free.app",
-    "http://127.0.0.1:8000/upstox-callback/"
+    "http://127.0.0.1:8000/upstox-callback/",
+    "https://tradeai.finance/upstox-callback/"
 ]
 
 CSRF_COOKIE_SECURE = False
@@ -61,7 +62,7 @@ ANGEL_ONE_LOGIN_URL = "https://smartapi.angelone.in/publisher-login?api_key={}&s
 # Upstox API Credentials
 UPSTOX_API_KEY = "8f1ab0d3-bdba-469e-a2fc-a29237e4c032"
 UPSTOX_API_SECRET = "34jbwppkm3"
-UPSTOX_REDIRECT_URI = "http://127.0.0.1:8000/upstox-callback/"
+UPSTOX_REDIRECT_URI = "https://tradeai.finance/upstox-callback/"
 
 # Application definition
 
