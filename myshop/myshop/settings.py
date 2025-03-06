@@ -36,28 +36,23 @@ ALLOWED_HOSTS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://dd3f-2401-4900-8fd1-a86a-d089-edf9-2a7e-3a36.ngrok-free.app",
-    "https://dd74-2401-4900-8fd1-a86a-d089-edf9-2a7e-3a36.ngrok-free.app",
-    "https://6dec-2401-4900-8fd1-a86a-d089-edf9-2a7e-3a36.ngrok-free.app",
-    "https://77d3-2401-4900-8fd1-a86a-4db2-d1cc-6ce5-ad2.ngrok-free.app",
-    "https://f0fe-117-194-4-8.ngrok-free.app",
     "http://127.0.0.1:8000/upstox-callback/",
     "https://tradeai.finance/upstox-callback/"
 ]
 
 CSRF_COOKIE_SECURE = False
 
-# Angel Broking API Credentials
-ANGEL_API_KEY = "GBCZDrbe"
-ANGEL_API_SECRET = "a19b3b69-1575-4e26-aeda-4361b269f317"
-ANGEL_REDIRECT_URI = "https://f0fe-117-194-4-8.ngrok-free.app/angel-one-callback/"
+# # Angel Broking API Credentials
+# ANGEL_API_KEY = "GBCZDrbe"
+# ANGEL_API_SECRET = "a19b3b69-1575-4e26-aeda-4361b269f317"
+# ANGEL_REDIRECT_URI = "https://tradeai.finance/angel-one-callback/"
 
-# Angel One API Login URL
-ANGEL_ONE_LOGIN_URL = "https://smartapi.angelone.in/publisher-login?api_key={}&state={}&redirect_uri={}".format(
-    ANGEL_API_KEY, 
-    "statevariable", 
-    ANGEL_REDIRECT_URI
-)
+# # Angel One API Login URL
+# ANGEL_ONE_LOGIN_URL = "https://smartapi.angelone.in/publisher-login?api_key={}&state={}&redirect_uri={}".format(
+#     ANGEL_API_KEY, 
+#     "statevariable", 
+#     ANGEL_REDIRECT_URI
+# )
 
 # Upstox API Credentials
 UPSTOX_API_KEY = "8f1ab0d3-bdba-469e-a2fc-a29237e4c032"

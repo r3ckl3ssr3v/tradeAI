@@ -1,9 +1,9 @@
-<div class="login-form">
+<div class="login-form" style="background-color: #1e1e1e; color: #ffffff;">
     <h2>Login</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Login</button>
+        <button type="submit" style="background-color: #007bff; color: white;">Login</button>
     </form>
-    <p>Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p>
+    <p>Don't have an account? <a href="{% url 'signup' %}" style="color: #4dff4d;">Sign up here</a></p>
 </div>

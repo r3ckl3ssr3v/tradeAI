@@ -5,7 +5,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #121212; /* Dark background */
+            color: #ffffff; /* Light text color */
             margin: 0;
             padding: 0;
         }
@@ -13,7 +14,7 @@
             max-width: 600px;
             margin: 50px auto;
             padding: 20px;
-            background-color: white;
+            background-color: #1e1e1e; /* Darker container background */
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
@@ -43,9 +44,12 @@
             text-align: center;
             text-decoration: none;
             transition: transform 0.2s;
+            background-color: #333; /* Dark option background */
+            color: #ffffff; /* Light text color */
         }
         .broker-option:hover {
             transform: translateY(-5px);
+            background-color: #444; /* Darker hover effect */
         }
         .angel-one {
             background-color: #007bff;
@@ -93,10 +97,10 @@
         </div>
 
         <div class="broker-options">
-            <a href="{% url 'angel_one_login' %}" class="broker-option angel-one">
+            <!-- <a href="{% url 'angel_one_login' %}" class="broker-option angel-one">
                 <h2>Angel One</h2>
                 <p>Login to your Angel One trading account</p>
-            </a>
+            </a> -->
             
             <a href="{% url 'upstox_login' %}" class="broker-option upstox">
                 <h2>Upstox</h2>
